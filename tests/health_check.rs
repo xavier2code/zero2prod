@@ -3,7 +3,7 @@
 #[tokio::test]
 async fn health_check_works() {
     // Arrage
-    spawn_app().await.expect("Faild to spawn our app.");
+    spawn_app();
 
     let client = reqwest::Client::new();
 
@@ -18,6 +18,8 @@ async fn health_check_works() {
     assert_eq!(Some(0), response.content_length());
 }
 
-async fn spawn_app() -> std::io::Result<()> {
-    zero2prod::run().await
+fn spawn_app() {
+    let server = zero2prod::run().expect("Faild to spawn our app.");
+
+    let _ = tokio::spawn(server);
 }
